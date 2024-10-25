@@ -661,30 +661,30 @@ preprocess_query_chain = RunnablePassthrough.assign(condensed_info = CONDENSE_QU
 # Router chain and retrieval chain
 # ====================================================================
 class RouteQuery1(BaseModel):
-    """Route a user query to the most relevant datasource."""
+    """Roteia a consulta do usuário para a fonte de dados mais relevante."""
     datasources: List[Literal["summary_store", "vector_store"]] = Field(
         ...,
-        description="Given a user question choose which datasources would be most relevant for answering their question",
+        description="Dada uma pergunta do usuário, escolha quais fontes de dados seriam mais relevantes para responder à sua pergunta.",
     )
 
-router_system_prompt1 = """You are an expert at routing user questions about plastic injection mold design to the appropriate data source.
-There are two possible destinations:
-1. vector_store: This store contains detailed chunks of text about injection mold design.
-2. summary_store: This store contains summaries of injection mold design documents.
+router_system_prompt1 = """Você é um especialista em roteamento de perguntas de usuários sobre design de moldes de injeção plástica para a fonte de dados apropriada.
+Existem dois destinos possíveis:
+1. vector_store: Este armazenamento contém trechos detalhados de texto sobre design de moldes de injeção.
+2. summary_store: Este armazenamento contém resumos de documentos sobre design de moldes de injeção.
 
-When deciding where to route a query, consider the following:
-- If the query asks for detailed information, specific techniques, or in-depth content about plastic injection mold design, route it to the vector_store.
-- If the query asks for an overview, summary, or general information about plastic injection mold design concepts, route it to the summary_store.
-- If the query involves both types of information, route it to both stores.
+Ao decidir para onde rotear uma consulta, considere o seguinte:
+- Se a consulta pede informações detalhadas, técnicas específicas ou conteúdo aprofundado sobre design de moldes de injeção plástica, roteie para o vector_store.
+- Se a consulta pede uma visão geral, resumo ou informações gerais sobre conceitos de design de moldes de injeção plástica, roteie para o summary_store.
+- Se a consulta envolve ambos os tipos de informação, roteie para ambas as fontes.
 
-Examples:
-1. User query: "What are the basic principles of injection mold design?"
-   Routing: summary_store
+Exemplos:
+1. Consulta do usuário: "Quais são os princípios básicos do design de moldes de injeção?"
+   Roteamento: summary_store
 
-2. User query: "What are the specific requirements for designing cooling channels in an injection mold?"
-   Routing: vector_store
+2. Consulta do usuário: "Quais são os requisitos específicos para projetar canais de resfriamento em um molde de injeção?"
+   Roteamento: vector_store
 
-3. User query: "Can you explain the importance of draft angles and provide detailed guidelines for different materials?"
+3. Consulta do usuário: "Você pode explicar a importância dos ângulos de saída e fornecer diretrizes detalhadas para diferentes materiais?"
    Routing: summary_store, vector_store
 """
 
@@ -702,35 +702,35 @@ router_chain1 = RunnablePassthrough.assign(classification1 = (lambda x: x['stand
 
 
 class RouteQuery2(BaseModel):
-    """Route a user query to the most relevant datasource."""
+    """Roteia a consulta do usuário para a fonte de dados mais relevante."""
     datasources: List[Literal["marco"]] = Field(
         ...,
-        description="Given a user question choose which datasources would be most relevant for answering their question about injection mold design",
+        description="Dada uma pergunta do usuário, escolha quais fontes de dados seriam mais relevantes para responder à sua pergunta sobre design de moldes de injeção.",
     )
 
-router_system_prompt2 = """You are an expert at routing user questions about plastic injection mold design.
-The only destination available is:
+router_system_prompt2 = """Você é um especialista em roteamento de perguntas de usuários sobre design de moldes de injeção plástica.
+O único destino disponível é:
 
-1. marco: Contains information and resources related to the design and manufacturing of injection molds.
+1. marco: Contém informações e recursos relacionados ao design e fabricação de moldes de injeção.
 
-When deciding where to route a query, consider the following:
-- If the query is about injection mold design, manufacturing, best practices, or any related topics, route it to "marco".
-- All queries related to plastic injection molding should be routed to "marco".
+Ao decidir para onde rotear uma consulta, considere o seguinte:
+- Se a consulta é sobre design de moldes de injeção, fabricação, melhores práticas ou qualquer tópico relacionado, roteie para "marco".
+- Todas as consultas relacionadas à moldagem de plásticos devem ser roteadas para "marco".
 
-Examples:
+Exemplos:
 
-1. User query: "What are the best practices in Injection Mold Design?"
+1. User query: "Quais são as melhores práticas em Design de Moldes de Injeção?"
     Routing: marco
 
-2. User query: "How to design cooling channels for injection molds?"
+2. User query: "Como projetar canais de resfriamento para moldes de injeção?"
     Routing: marco
 
-3. User query: "What are the key considerations for plastic part design?"
+3. User query: "Quais são as principais considerações para o design de peças plásticas?"
     Routing: marco
 
-4. User query: "Can you show me examples of good mold design practices?"
+4. User query: "Você pode me mostrar exemplos de boas práticas de design de moldes?"
     Routing: marco
-"""
+""" 
 
 router_prompt2 = ChatPromptTemplate.from_messages([
     ("system", router_system_prompt2),
@@ -818,10 +818,10 @@ retrieval_chain = RunnablePassthrough.assign(context = route_query)
 # QA chain
 # ====================================================================
 class QAFormat(BaseModel):
-    """You are a knowledgeable AI assistant specializing in plastic injection mold design. 
-                   Provide detailed and accurate information about best practices, design considerations, and troubleshooting tips for plastic injection molding."""
-    answer: str = Field(description="Answer to the user question/request")
-    image_paths: List[str] = Field(default_factory=list, description="Relevant image paths extracted from the context. Leave empty if no relevant images are found.")
+    """Você é um assistente de IA conhecedor, especializado em design de moldes de injeção plástica. 
+Forneça informações detalhadas e precisas sobre melhores práticas, considerações de design e dicas de resolução de problemas para moldagem por injeção de plásticos."""
+answer: str = Field(description="Resposta à pergunta/solicitação do usuário")
+image_paths: List[str] = Field(default_factory=list, description="Caminhos de imagens relevantes extraídas do contexto. Deixe vazio se nenhuma imagem relevante for encontrada.")
 
 qaformat_functions = [convert_to_openai_function(QAFormat)]
 

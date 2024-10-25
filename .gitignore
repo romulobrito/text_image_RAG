@@ -1,6 +1,6 @@
 .streamlit/secrets.toml
+.streamlit/config.toml
 __pycache__/
 *.pyc
 venv/
 .DS_Store" > .gitignore
-config.toml

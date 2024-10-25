@@ -32,7 +32,7 @@ from langchain.agents import AgentExecutor
 from langchain.agents.format_scratchpad import format_to_openai_functions
 from typing import Literal, List
 import os
-
+import toml
 
 import logging
 
@@ -43,7 +43,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-api_key = openai_key = "xxxxxxxxxxxx"
+
+
+config = toml.load("/home/romulobrito/projetos/image-RAG/text_image_rag/.streamlit/config.toml")
+api_key = config["api"]["key"]
 
 # ====================================================================
 # Load databases and initialize the retrievers
